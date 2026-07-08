@@ -1,15 +1,10 @@
 "use client";
 
 import { SITE } from "@/lib/Constants";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-  useTransform,
-} from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
 import {
   FaArrowRight,
   FaWhatsapp,
@@ -37,7 +32,8 @@ const OFFERS = [
     uni: "Top UK University",
     programme: "MSc Computer Science",
     intake: "Fall 2026",
-    scholarship: "£12,000 / year",
+    currency: "£",
+    amount: 12000,
   },
   {
     flag: "🇨🇦",
@@ -45,7 +41,8 @@ const OFFERS = [
     uni: "Top Canadian University",
     programme: "MEng Data Science",
     intake: "Winter 2026",
-    scholarship: "CA$15,000 / year",
+    currency: "CA$",
+    amount: 15000,
   },
   {
     flag: "🇺🇸",
@@ -53,7 +50,8 @@ const OFFERS = [
     uni: "Top US University",
     programme: "MS Information Systems",
     intake: "Fall 2026",
-    scholarship: "$18,000 / year",
+    currency: "$",
+    amount: 18000,
   },
   {
     flag: "🇦🇺",
@@ -61,201 +59,335 @@ const OFFERS = [
     uni: "Top Australian University",
     programme: "Master of IT",
     intake: "Feb 2026",
-    scholarship: "A$20,000 / year",
+    currency: "A$",
+    amount: 20000,
   },
 ];
 
-/** Signature element: an auto-sliding 3D "Offer of Admission" showcase */
+type Setter = ((value: number) => void) | null;
+const ADVANCE = 4.6; // seconds per offer
+
+/** Signature element: an interactive, GSAP-driven "Offer of Admission" showcase */
 function AdmitCard() {
-  const reduce = useReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
+  const root = useRef<HTMLDivElement>(null);
+  const card = useRef<HTMLDivElement>(null);
+  const glare = useRef<HTMLDivElement>(null);
+  const amount = useRef<HTMLSpanElement>(null);
+  const progress = useRef<HTMLDivElement>(null);
+
+  const setRotX = useRef<Setter>(null);
+  const setRotY = useRef<Setter>(null);
+  const setGlareX = useRef<Setter>(null);
+  const setGlareY = useRef<Setter>(null);
+  const reduce = useRef(false);
 
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
+  const offer = OFFERS[i];
 
-  useEffect(() => {
-    if (reduce || paused) return;
-    const id = setInterval(() => setI((p) => (p + 1) % OFFERS.length), 4000);
-    return () => clearInterval(id);
-  }, [reduce, paused]);
+  // one-time: reduced-motion check, entrance, idle float, tilt/glare setters
+  useGSAP(
+    () => {
+      reduce.current = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
 
-  // mouse parallax tilt
-  const mx = useMotionValue(0.5);
-  const my = useMotionValue(0.5);
-  const rotateY = useSpring(useTransform(mx, [0, 1], [-11, 11]), {
-    stiffness: 150,
-    damping: 18,
-  });
-  const rotateX = useSpring(useTransform(my, [0, 1], [9, -9]), {
-    stiffness: 150,
-    damping: 18,
-  });
+      if (reduce.current) {
+        gsap.set(card.current, { autoAlpha: 1 });
+        return;
+      }
+
+      setRotX.current = gsap.quickTo(card.current, "rotationX", {
+        duration: 0.6,
+        ease: "power3.out",
+      });
+      setRotY.current = gsap.quickTo(card.current, "rotationY", {
+        duration: 0.6,
+        ease: "power3.out",
+      });
+      gsap.set(glare.current, { xPercent: -50, yPercent: -50 });
+      setGlareX.current = gsap.quickTo(glare.current, "x", {
+        duration: 0.5,
+        ease: "power3.out",
+      });
+      setGlareY.current = gsap.quickTo(glare.current, "y", {
+        duration: 0.5,
+        ease: "power3.out",
+      });
+
+      gsap.from(card.current, {
+        autoAlpha: 0,
+        y: 48,
+        rotationY: -16,
+        duration: 1,
+        ease: "power3.out",
+        delay: 0.15,
+        onComplete: () => {
+          gsap.to(card.current, {
+            y: "+=10",
+            duration: 3.2,
+            ease: "sine.inOut",
+            repeat: -1,
+            yoyo: true,
+          });
+        },
+      });
+    },
+    { scope: root },
+  );
+
+  // per-offer: reset progress, stagger content in, pop the stamp, count the number
+  useGSAP(
+    () => {
+      const q = gsap.utils.selector(root);
+      if (progress.current)
+        gsap.set(progress.current, {
+          scaleX: 0,
+          transformOrigin: "left center",
+        });
+
+      if (reduce.current) {
+        if (amount.current)
+          amount.current.textContent =
+            offer.currency + offer.amount.toLocaleString();
+        return;
+      }
+
+      gsap.fromTo(
+        q("[data-slide]"),
+        { autoAlpha: 0, y: 16 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.5,
+          stagger: 0.07,
+          ease: "power2.out",
+        },
+      );
+      gsap.fromTo(
+        q("[data-stamp]"),
+        { scale: 0.4, rotation: -24, autoAlpha: 0 },
+        {
+          scale: 1,
+          rotation: -8,
+          autoAlpha: 1,
+          duration: 0.6,
+          ease: "back.out(2.2)",
+          delay: 0.12,
+        },
+      );
+
+      const obj = { v: 0 };
+      gsap.to(obj, {
+        v: offer.amount,
+        duration: 1,
+        ease: "power1.out",
+        onUpdate: () => {
+          if (amount.current)
+            amount.current.textContent =
+              offer.currency + Math.round(obj.v).toLocaleString();
+        },
+      });
+    },
+    { scope: root, dependencies: [i] },
+  );
+
+  // auto-advance progress bar (freezes on hover / reduced motion)
+  useGSAP(
+    () => {
+      if (reduce.current || paused || !progress.current) return;
+      const start = Number(gsap.getProperty(progress.current, "scaleX")) || 0;
+      const tw = gsap.to(progress.current, {
+        scaleX: 1,
+        duration: ADVANCE * (1 - start),
+        ease: "none",
+        onComplete: () => setI((p) => (p + 1) % OFFERS.length),
+      });
+      return () => {
+        tw.kill();
+      };
+    },
+    { scope: root, dependencies: [i, paused] },
+  );
 
   function onMove(e: React.MouseEvent<HTMLDivElement>) {
-    if (reduce || !ref.current) return;
-    const r = ref.current.getBoundingClientRect();
-    mx.set((e.clientX - r.left) / r.width);
-    my.set((e.clientY - r.top) / r.height);
+    if (reduce.current || !card.current) return;
+    const r = card.current.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    setRotY.current?.(gsap.utils.mapRange(0, 1, -11, 11, px));
+    setRotX.current?.(gsap.utils.mapRange(0, 1, 9, -9, py));
+    setGlareX.current?.(e.clientX - r.left);
+    setGlareY.current?.(e.clientY - r.top);
   }
   function onEnter() {
     setPaused(true);
+    if (!reduce.current) gsap.to(glare.current, { opacity: 1, duration: 0.3 });
   }
   function onLeave() {
     setPaused(false);
-    mx.set(0.5);
-    my.set(0.5);
+    if (reduce.current) return;
+    setRotX.current?.(0);
+    setRotY.current?.(0);
+    gsap.to(glare.current, { opacity: 0, duration: 0.4 });
   }
-
-  const offer = OFFERS[i];
 
   return (
     <div
-      ref={ref}
-      onMouseMove={onMove}
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
+      ref={root}
       style={{ perspective: "1200px" }}
-      className="relative mx-auto w-full max-w-md anim-floaty-slow"
+      className="relative mx-auto w-full max-w-md"
     >
       {/* ambient glows */}
-      <div className="absolute -inset-10 -z-10 rounded-[3rem] bg-gold-300/35 blur-3xl anim-glow" />
+      <div className="absolute -inset-10 -z-10 rounded-[3rem] bg-gold-300/30 blur-3xl" />
       <div className="absolute -right-12 top-8 -z-10 h-60 w-60 rounded-full bg-blue-300/40 blur-3xl" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 40, rotateY: -14 }}
-        animate={{ opacity: 1, y: 0, rotateY: 0 }}
-        transition={{ duration: 0.9, delay: 0.25, ease: EASE }}
-        style={{
-          rotateX: reduce ? 0 : rotateX,
-          rotateY: reduce ? 0 : rotateY,
-          transformStyle: "preserve-3d",
-        }}
+      <div
+        ref={card}
+        onMouseMove={onMove}
+        onMouseEnter={onEnter}
+        onMouseLeave={onLeave}
+        style={{ transformStyle: "preserve-3d" }}
         className="relative"
       >
-        {/* slide stage */}
-        <div className="relative h-[392px] w-full sm:h-[400px]">
-          {/* ghost cards behind -> "multiple offers" depth */}
+        {/* ghost cards → "stack of offers" depth */}
+        <div className="absolute inset-0 translate-x-5 translate-y-4 rotate-[5deg] rounded-[1.9rem] border border-line bg-white/55 shadow-soft" />
+        <div className="absolute inset-0 translate-x-2.5 translate-y-2 rotate-[2.5deg] rounded-[1.9rem] border border-line bg-white/80 shadow-soft" />
+
+        {/* main card */}
+        <div className="relative overflow-hidden rounded-[1.9rem] border border-line bg-linear-to-br from-white via-white to-blue-50/60 p-6 shadow-soft">
+          {/* cursor-following glare */}
           <div
-            style={{
-              transform: "translateZ(-70px) translate(24px, 20px) rotate(5deg)",
-            }}
-            className="absolute inset-0 rounded-[1.9rem] border border-line bg-white/60 shadow-soft"
+            ref={glare}
+            className="pointer-events-none absolute left-0 top-0 h-44 w-44 rounded-full bg-white/50 opacity-0 blur-2xl"
           />
-          <div
-            style={{
-              transform:
-                "translateZ(-35px) translate(12px, 10px) rotate(2.5deg)",
-            }}
-            className="absolute inset-0 rounded-[1.9rem] border border-line bg-white/80 shadow-soft"
-          />
+          {/* top accent bar */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-linear-to-r from-blue-500 via-blue-400 to-gold-400" />
+          {/* watermark ring */}
+          <div className="pointer-events-none absolute -bottom-14 -right-14 h-48 w-48 rounded-full border-18 border-blue-100/40" />
 
-          {/* the sliding offer card */}
-          <AnimatePresence>
-            <motion.div
-              key={i}
-              initial={reduce ? false : { opacity: 0, x: 44, scale: 0.96 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={
-                reduce ? { opacity: 0 } : { opacity: 0, x: -44, scale: 0.96 }
-              }
-              transition={{ duration: reduce ? 0.2 : 0.6, ease: EASE }}
-              className="absolute inset-0 overflow-hidden rounded-[1.9rem] border border-line bg-gradient-to-br from-white via-white to-blue-50/50 p-5 shadow-soft sm:p-6"
-            >
-              {/* decorative watermark ring */}
-              <div className="pointer-events-none absolute -bottom-12 -right-12 h-48 w-48 rounded-full border-[18px] border-blue-100/50" />
-              {/* top accent bar */}
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-blue-400 to-gold-400" />
+          <div className="relative z-10">
+            {/* eyebrow + admitted stamp */}
+            <div className="flex items-center justify-between gap-2">
+              <span
+                data-slide
+                className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-blue-700"
+              >
+                <span className="grid h-4 w-4 place-items-center rounded-full bg-blue-600 text-[8px] text-white">
+                  <FaCheckCircle />
+                </span>
+                Offer of Admission
+              </span>
+              <span
+                data-stamp
+                className="inline-flex items-center gap-1 rounded-full border-2 border-emerald-500/70 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.16em] text-emerald-600"
+              >
+                <FaCheckCircle className="text-[11px]" />
+                Admitted
+              </span>
+            </div>
 
-              <div className="relative z-10 flex h-full flex-col">
-                {/* ADMITTED seal */}
-                <div className="absolute right-0 top-0 flex items-center gap-1 rotate-[-8deg] rounded-full border-2 border-emerald-500/70 bg-emerald-500/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-emerald-600">
-                  <FaCheckCircle className="text-[11px]" />
-                  Admitted
-                </div>
-
-                {/* header */}
-                <div className="flex items-center gap-3 pr-24">
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-tint text-2xl shadow-card ring-1 ring-line">
-                    {offer.flag}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="truncate text-[10px] font-semibold uppercase tracking-[0.16em] text-blue-700">
-                      Offer of Admission · {offer.country}
-                    </p>
-                    <p className="flex items-center gap-1.5 font-display text-lg font-bold leading-tight text-ink">
-                      {offer.uni}
-                      <FaCheckCircle className="shrink-0 text-sm text-blue-500" />
-                    </p>
-                  </div>
-                </div>
-
-                {/* programme / intake */}
-                <div className="mt-5 grid grid-cols-2 gap-4 border-t border-dashed border-line pt-4">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-widest text-slate">
-                      Programme
-                    </p>
-                    <p className="font-semibold text-ink">{offer.programme}</p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] uppercase tracking-widest text-slate">
-                      Intake
-                    </p>
-                    <p className="font-semibold text-ink">{offer.intake}</p>
-                  </div>
-                </div>
-
-                {/* scholarship highlight */}
-                <div className="mt-4 flex items-center gap-3 overflow-hidden rounded-2xl bg-gradient-to-r from-gold-300/40 to-gold-400/20 p-3.5 ring-1 ring-gold-400/40">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-gold-300 to-gold-500 text-ink shadow-card">
-                    <FaAward className="text-lg" />
-                  </span>
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-widest text-slate">
-                      Scholarship secured
-                    </p>
-                    <p className="font-display text-xl font-extrabold text-ink">
-                      {offer.scholarship}
-                    </p>
-                  </div>
-                </div>
-
-                {/* trust footer (built in — no floating chips) */}
-                <div className="mt-auto flex items-center gap-3 rounded-2xl bg-tint px-4 py-3">
-                  <span className="flex items-center gap-1.5 text-sm font-semibold text-ink">
-                    <FaShieldAlt className="text-emerald-500" />
-                    Visa ready
-                  </span>
-                  <span className="h-4 w-px bg-line" />
-                  <span className="flex items-center gap-1 text-sm font-semibold text-ink">
-                    <FaStar className="text-gold-400" />
-                    4.9
-                  </span>
-                  <span className="ml-auto text-xs font-medium text-slate">
-                    8,000+ admits
-                  </span>
-                </div>
+            {/* flag + university */}
+            <div data-slide className="mt-4 flex items-center gap-3">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-tint text-2xl shadow-card ring-1 ring-line">
+                {offer.flag}
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-[11px] font-semibold text-slate">
+                  {offer.country}
+                </p>
+                <p className="flex items-center gap-1.5 font-display text-lg font-bold leading-tight text-ink">
+                  {offer.uni}
+                  <FaCheckCircle className="shrink-0 text-sm text-blue-500" />
+                </p>
               </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+            </div>
 
-        {/* slide indicators */}
-        <div className="mt-7 flex items-center justify-center gap-2">
-          {OFFERS.map((_, d) => (
-            <button
-              key={d}
-              onClick={() => setI(d)}
-              aria-label={`Show offer ${d + 1}`}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                d === i
-                  ? "w-7 bg-blue-600"
-                  : "w-2 bg-blue-200 hover:bg-blue-300"
-              }`}
-            />
-          ))}
+            {/* programme / intake */}
+            <div
+              data-slide
+              className="mt-5 grid grid-cols-2 gap-4 border-t border-dashed border-line pt-4"
+            >
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-slate">
+                  Programme
+                </p>
+                <p className="font-semibold text-ink">{offer.programme}</p>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-slate">
+                  Intake
+                </p>
+                <p className="font-semibold text-ink">{offer.intake}</p>
+              </div>
+            </div>
+
+            {/* scholarship highlight (count-up) */}
+            <div
+              data-slide
+              className="mt-4 flex items-center gap-3 overflow-hidden rounded-2xl bg-linear-to-r from-gold-300/40 to-gold-400/20 p-3.5 ring-1 ring-gold-400/40"
+            >
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-linear-to-br from-gold-300 to-gold-500 text-ink shadow-card">
+                <FaAward className="text-lg" />
+              </span>
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-slate">
+                  Scholarship secured
+                </p>
+                <p className="font-display text-xl font-extrabold text-ink">
+                  <span ref={amount}>
+                    {offer.currency}
+                    {offer.amount.toLocaleString()}
+                  </span>
+                  <span className="text-sm font-bold text-slate"> / year</span>
+                </p>
+              </div>
+            </div>
+
+            {/* trust footer */}
+            <div
+              data-slide
+              className="mt-4 flex items-center gap-3 rounded-2xl bg-tint px-4 py-3"
+            >
+              <span className="flex items-center gap-1.5 text-sm font-semibold text-ink">
+                <FaShieldAlt className="text-emerald-500" />
+                Visa ready
+              </span>
+              <span className="h-4 w-px bg-line" />
+              <span className="flex items-center gap-1 text-sm font-semibold text-ink">
+                <FaStar className="text-gold-400" />
+                4.9
+              </span>
+              <span className="ml-auto text-xs font-medium text-slate">
+                8,000+ admits
+              </span>
+            </div>
+
+            {/* auto-advance progress */}
+            <div className="mt-5 h-1 w-full overflow-hidden rounded-full bg-blue-100/70">
+              <div
+                ref={progress}
+                className="h-full w-full origin-left rounded-full bg-linear-to-r from-blue-500 to-gold-400"
+                style={{ transform: "scaleX(0)" }}
+              />
+            </div>
+          </div>
         </div>
-      </motion.div>
+      </div>
+
+      {/* slide controls */}
+      <div className="mt-6 flex items-center justify-center gap-2">
+        {OFFERS.map((_, d) => (
+          <button
+            key={d}
+            onClick={() => setI(d)}
+            aria-label={`Show offer ${d + 1}`}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              d === i ? "w-7 bg-blue-600" : "w-2 bg-blue-200 hover:bg-blue-300"
+            }`}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -265,9 +397,9 @@ export default function Hero() {
     <section id="home" className="relative overflow-hidden pt-28 lg:pt-32">
       {/* light background with soft blue + warm glows */}
       <div className="absolute inset-0 -z-20 bg-linear-to-b from-tint to-paper" />
-      <div className="absolute inset-0 -z-10 bg-grid opacity-70 [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" />
-      <div className="absolute -top-24 left-1/4 -z-10 h-[420px] w-[680px] -translate-x-1/2 rounded-full bg-blue-200/40 blur-[120px]" />
-      <div className="absolute -top-10 right-0 -z-10 h-[300px] w-[380px] rounded-full bg-gold-300/30 blur-[120px]" />
+      <div className="absolute inset-0 -z-10 bg-grid opacity-70 mask-[radial-gradient(ellipse_at_top,black,transparent_72%)]" />
+      <div className="absolute -top-24 left-1/4 -z-10 h-105 w-170 -translate-x-1/2 rounded-full bg-blue-200/40 blur-[120px]" />
+      <div className="absolute -top-10 right-0 -z-10 h-75 w-95 rounded-full bg-gold-300/30 blur-[120px]" />
 
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 pb-20 lg:grid-cols-2 lg:px-8 lg:pb-28">
         <motion.div variants={container} initial="hidden" animate="show">
@@ -303,7 +435,7 @@ export default function Hero() {
           >
             <a
               href="#contact"
-              className="group flex items-center gap-2 rounded-full bg-gradient-to-r from-gold-300 to-gold-400 px-7 py-3.5 font-semibold text-ink shadow-soft transition-transform duration-200 hover:scale-[1.04]"
+              className="group flex items-center gap-2 rounded-full bg-linear-to-r from-gold-300 to-gold-400 px-7 py-3.5 font-semibold text-ink shadow-soft transition-transform duration-200 hover:scale-[1.04]"
             >
               Start Your Journey
               <FaArrowRight className="transition-transform duration-200 group-hover:translate-x-1" />

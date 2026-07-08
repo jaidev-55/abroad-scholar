@@ -10,11 +10,12 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaBars, FaTimes, FaPhoneAlt } from "react-icons/fa";
 import { NAV, SITE } from "@/lib/Constants";
+import Link from "next/link";
 
 function Logo() {
   return (
-    <a
-      href="#home"
+    <Link
+      href="/"
       className="flex items-center"
       aria-label={`${SITE.name} — home`}
     >
@@ -26,7 +27,7 @@ function Logo() {
         priority
         className="h-11 w-auto brightness-0 invert sm:h-14"
       />
-    </a>
+    </Link>
   );
 }
 

@@ -33,7 +33,7 @@ const CtaSection = ({
       <Reveal>
         <div className="relative mx-auto flex max-w-6xl flex-col overflow-hidden rounded-4xl bg-navy shadow-soft lg:min-h-104 lg:flex-row">
           {data.ctaImage && (
-            <div className="relative h-52 w-full shrink-0 sm:h-64 lg:absolute lg:inset-y-0 lg:right-0 lg:order-2 lg:h-auto lg:w-3/5">
+            <div className="relative h-52 w-full shrink-0 sm:h-64 lg:absolute lg:inset-y-0 lg:right-0 lg:order-2 lg:h-auto lg:w-1/2">
               <Image
                 src={data.ctaImage}
                 alt={`Study in ${data.name}`}
@@ -65,7 +65,7 @@ const CtaSection = ({
           </div>
 
           {/* Content */}
-          <div className="relative order-first flex flex-1 flex-col justify-center p-8 sm:p-12 lg:max-w-xl lg:p-14">
+          <div className="relative order-first flex flex-1 flex-col justify-center p-8 sm:p-12 lg:w-3/5 lg:max-w-none lg:p-14">
             <h2 className="font-display text-2xl font-bold leading-tight tracking-tight text-cloud sm:text-3xl lg:text-4xl">
               Ready to study in{" "}
               <span className="text-gold-gradient">{data.name}</span>?
