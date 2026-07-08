@@ -145,7 +145,7 @@ const DestinationsPage = () => {
           <Reveal>
             <div className="relative mx-auto grid max-w-6xl overflow-hidden rounded-4xl bg-linear-to-br from-navy via-navy to-navy-deep shadow-soft lg:grid-cols-2">
               {/* ── Left: copy ── */}
-              <div className="relative z-10 p-8 text-center sm:p-12 lg:p-14 lg:text-left">
+              <div className="relative z-10 p-8 text-center sm:p-10 lg:text-left">
                 <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-cloud sm:text-4xl">
                   Not sure which country is{" "}
                   <span className="text-gold-300">right for you?</span>
@@ -157,7 +157,7 @@ const DestinationsPage = () => {
                 <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row lg:justify-start">
                   <Link
                     href="/#contact"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-linear-to-r from-gold-300 to-gold-400 px-5 py-3  font-semibold text-ink shadow-xl shadow-gold-500/25 transition-transform hover:scale-[1.03] sm:w-auto"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-linear-to-r from-gold-300 to-gold-400 px-5 py-3  font-semibold text-ink shadow-xl  transition-transform hover:scale-[1.03] sm:w-auto"
                   >
                     Get free guidance
                     <FaArrowRight />

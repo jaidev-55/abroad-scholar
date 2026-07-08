@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 };
 
 const HERO_IMAGE = "/images/success/success-stories-hero-illustration.png";
-const CTA_IMAGE = "/images/success/success-stories-hero-illustration.png";
+const CTA_IMAGE = "/images/success/success-stories-cta-illustration.png";
 
 const UNIVERSITIES = Array.from(
   new Set(
@@ -251,15 +251,11 @@ export default function SuccessPage() {
         </section>
 
         {/* ───── CTA ───── */}
-        <section className="px-4 py-14 sm:px-5 sm:py-16 lg:px-8 lg:py-24">
+        <section className="px-4 py-14 sm:px-5 sm:py-16">
           <Reveal>
             <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl bg-linear-to-br from-navy via-navy to-navy-deep shadow-soft sm:rounded-4xl lg:min-h-104">
-              <div className="pointer-events-none absolute -left-16 -top-16 h-64 w-64 rounded-full bg-gold-400/15 blur-3xl" />
-              <div className="pointer-events-none absolute -bottom-20 -right-10 h-72 w-72 rounded-full bg-blue-500/25 blur-3xl" />
-
-              {/* Content — first in DOM, layered above the image */}
               <div
-                className={`relative z-10 p-6 sm:p-10 lg:p-14 ${
+                className={`relative z-10 p-6 sm:p-10  ${
                   CTA_IMAGE
                     ? "lg:flex lg:min-h-104 lg:max-w-xl lg:flex-col lg:justify-center lg:text-left"
                     : "text-center"
@@ -298,7 +294,7 @@ export default function SuccessPage() {
                 >
                   <Link
                     href="/#contact"
-                    className="group inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-linear-to-r from-gold-300 to-gold-400 px-6 py-3.5 text-sm font-semibold text-ink shadow-xl shadow-gold-500/25 transition hover:-translate-y-0.5 hover:brightness-105 sm:w-auto sm:px-8 sm:py-4 sm:text-base"
+                    className="group inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-linear-to-r from-gold-300 to-gold-400 px-6 py-3.5 text-sm font-semibold text-ink shadow-xl  transition hover:-translate-y-0.5 hover:brightness-105 sm:w-auto sm:px-5 sm:py-3 sm:text-base"
                   >
                     Start your journey
                     <FaArrowRight className="transition-transform duration-200 group-hover:translate-x-1" />
@@ -307,7 +303,7 @@ export default function SuccessPage() {
                     href={waHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/20 bg-white/3 px-6 py-3.5 text-sm font-semibold text-cloud transition hover:-translate-y-0.5 hover:border-gold-400/50 hover:text-gold-400 sm:w-auto sm:px-8 sm:py-4 sm:text-base"
+                    className="inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/20 bg-white/3 px-6 py-3.5 text-sm font-semibold text-cloud transition hover:-translate-y-0.5 hover:border-gold-400/50 hover:text-gold-400 sm:w-auto sm:px-5 sm:py-3 sm:text-base"
                   >
                     <FaWhatsapp className="text-lg text-[#25D366]" />
                     Chat on WhatsApp
@@ -323,7 +319,6 @@ export default function SuccessPage() {
                 </p>
               </div>
 
-              {/* Image — banner below the copy on mobile, bleeds right on desktop */}
               {CTA_IMAGE && (
                 <div className="relative aspect-4/3 w-full sm:aspect-2/1 lg:absolute lg:inset-y-0 lg:right-0 lg:aspect-auto lg:w-3/5">
                   <Image

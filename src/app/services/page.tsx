@@ -291,7 +291,7 @@ const ServicesPage = () => {
         </section>
 
         {/* ───── CTA ───── */}
-        <section className="px-5 pt-16 lg:px-8 lg:pt-24">
+        <section className="px-5 pt-16 lg:px-8 ">
           <Reveal>
             <div
               className={`relative mx-auto flex max-w-6xl flex-col overflow-hidden rounded-4xl bg-linear-to-br from-navy via-navy to-navy-deep shadow-soft ${
@@ -313,7 +313,7 @@ const ServicesPage = () => {
               )}
 
               <div
-                className={`relative order-first flex flex-1 flex-col justify-center p-8 sm:p-12 ${
+                className={`relative order-first flex flex-1 flex-col justify-center p-8 sm:p-10 ${
                   CTA_IMAGE ? "lg:max-w-xl" : ""
                 }`}
               >
@@ -353,7 +353,7 @@ const ServicesPage = () => {
                 >
                   <Link
                     href="/#contact"
-                    className="inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-linear-to-r from-gold-300 to-gold-400 px-5 py-3 font-semibold text-ink shadow-xl shadow-gold-500/25 transition duration-200 hover:-translate-y-0.5 hover:brightness-105 sm:w-auto"
+                    className="inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-linear-to-r from-gold-300 to-gold-400 px-5 py-3 font-semibold text-ink shadow-xl transition duration-200 hover:-translate-y-0.5 hover:brightness-105 sm:w-auto"
                   >
                     Book free counselling
                     <FaArrowRight />
