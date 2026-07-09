@@ -23,6 +23,8 @@ import {
 } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import Stories from "./Stories";
+import UniversitiesMarquee from "@/components/success/UniversitiesMarquee";
+
 
 export const metadata: Metadata = {
   title: "Success Stories — Student Results & Reviews | Abroad Scholars",
@@ -91,7 +93,7 @@ export default function SuccessPage() {
                 </h1>
                 <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate sm:mt-5 sm:text-base">
                   Top IELTS bands, scholarships, dream-university admits and
-                  visas approved here&apos;s what studying abroad with Abroad
+                  visas approved — here&apos;s what studying abroad with Abroad
                   Scholars actually looks like for the students who trusted us.
                 </p>
               </Reveal>
@@ -135,25 +137,14 @@ export default function SuccessPage() {
           </div>
         </section>
 
-        {/* ───── Universities strip ───── */}
-        <section className="border-y border-line bg-tint py-8 sm:py-10">
-          <div className="mx-auto max-w-6xl px-4 sm:px-5 lg:px-8">
-            <Reveal>
-              <p className="text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-slate sm:text-xs sm:tracking-[0.2em]">
-                Our students have joined universities like
-              </p>
-              <div className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:mt-6 sm:gap-2.5">
-                {UNIVERSITIES.map((u) => (
-                  <span
-                    key={u}
-                    className="rounded-full border border-line bg-paper px-3 py-1.5 text-xs font-medium text-ink/80 sm:px-4 sm:py-2 sm:text-sm"
-                  >
-                    {u}
-                  </span>
-                ))}
-              </div>
-            </Reveal>
-          </div>
+        {/* ───── Universities strip (auto-scrolling marquee) ───── */}
+        <section className="overflow-hidden border-y border-line bg-tint py-8 sm:py-10">
+          <Reveal>
+            <p className="px-4 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-slate sm:text-xs sm:tracking-[0.2em]">
+              Our students have joined universities like
+            </p>
+            <UniversitiesMarquee items={UNIVERSITIES} />
+          </Reveal>
         </section>
 
         {/* ───── Results wall ───── */}

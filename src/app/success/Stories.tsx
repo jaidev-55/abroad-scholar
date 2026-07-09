@@ -18,7 +18,7 @@ export default function Stories({
         return (
           <div
             key={id}
-            className="relative aspect-[9/14] overflow-hidden rounded-2xl bg-ink shadow-card"
+            className="relative aspect-9/14 overflow-hidden rounded-2xl bg-ink shadow-card"
           >
             {active === id ? (
               <>
@@ -50,7 +50,7 @@ export default function Stories({
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/10" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/20 to-black/10" />
                 <span className="absolute inset-0 grid place-items-center">
                   <span className="grid h-12 w-12 place-items-center rounded-full bg-white/15 ring-1 ring-white/25 backdrop-blur-sm transition-all duration-300 group-hover:scale-110 group-hover:bg-white/25 sm:h-14 sm:w-14">
                     <IoPlayCircle className="h-8 w-8 text-white drop-shadow sm:h-9 sm:w-9" />

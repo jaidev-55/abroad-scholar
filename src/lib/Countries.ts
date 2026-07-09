@@ -71,20 +71,6 @@ export const COUNTRIES: Country[] = [
     ],
     universities: [
       {
-        name: "University of Oxford",
-        image: "/images/destination/university/uk/oxford-university-campus.png",
-      },
-      {
-        name: "University of Cambridge",
-        image:
-          "/images/destination/university/uk/cambridge-university-campus.png",
-      },
-      {
-        name: "Imperial College London",
-        image:
-          "/images/destination/university/uk/imperial-university-campus.png",
-      },
-      {
         name: "University College London (UCL)",
         image: "/images/destination/university/uk/ucl-university-campus.png",
       },
@@ -2354,7 +2340,8 @@ export const COUNTRIES: Country[] = [
     ctaImage: "/images/destination/cta/new-zealand-cta-banner-landmarks.png",
     cardImg:
       "/images/destination/country/new-zealand-study-destination-card-banner.png",
-    intakesImage: "/images/destination/intakes/new-zealand-study-abroad-planning-desk.png",
+    intakesImage:
+      "/images/destination/intakes/new-zealand-study-abroad-planning-desk.png",
     flag: "🇳🇿",
     tagline: "Globally ranked degrees and up to 3 years of post-study work",
     blurb:
