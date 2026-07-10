@@ -4,6 +4,7 @@ import Navbar from "@/components/common/Navbar";
 import { Reveal } from "@/components/home/Reveal";
 import { SITE } from "@/lib/Constants";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   FaPhoneAlt,
@@ -11,6 +12,7 @@ import {
   FaEnvelope,
   FaMapMarkerAlt,
   FaRegClock,
+  FaRegImage,
   FaInstagram,
   FaFacebookF,
   FaLinkedinIn,
@@ -27,7 +29,9 @@ export const metadata: Metadata = {
 const mapSrc =
   "https://maps.google.com/maps?q=Abroad%20Scholar%20Anna%20Nagar%20Chennai&t=&z=15&ie=UTF8&iwloc=&output=embed";
 
-export default function ContactPage() {
+const HERO_IMAGE: string = "/images/study-abroad-consultation-contact-hero.png";
+
+const ContactPage = () => {
   const waHref = `https://wa.me/${SITE.whatsapp}`;
 
   const methods = [
@@ -57,43 +61,73 @@ export default function ContactPage() {
   return (
     <>
       <Navbar />
-      <main className="bg-paper">
-        {/* ───── Hero ───── */}
-        <section className="relative overflow-hidden bg-linear-to-b from-tint2 via-tint to-paper pt-28 pb-12 sm:pt-32 sm:pb-16">
-          <div className="absolute -right-24 top-10 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl" />
-          <div className="absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-gold-300/20 blur-3xl" />
-          <div className="relative mx-auto max-w-6xl px-5 lg:px-8">
-            <Reveal>
-              <nav className="flex items-center gap-1.5 text-xs font-medium text-slate">
-                <Link
-                  href="/"
-                  className="transition-colors hover:text-blue-700"
-                >
-                  Home
-                </Link>
-                <span className="text-muted">/</span>
-                <span className="text-ink">Contact</span>
-              </nav>
+      <main>
+        <section className="relative overflow-hidden  pt-28 pb-12 ">
+          <div className="relative mx-auto max-w-7xl px-5">
+            <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+              {/* left: copy */}
+              <Reveal>
+                <nav className="flex items-center gap-1.5 text-xs font-medium text-slate">
+                  <Link
+                    href="/"
+                    className="transition-colors hover:text-blue-700"
+                  >
+                    Home
+                  </Link>
+                  <span className="text-muted">/</span>
+                  <span className="text-ink">Contact</span>
+                </nav>
 
-              <span className="mt-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">
-                Get in touch
-              </span>
-              <h1 className="mt-5 max-w-3xl font-display text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl">
-                Let&apos;s talk about your{" "}
-                <span className="text-accent">study abroad plans</span>
-              </h1>
-              <p className="mt-5 max-w-2xl text-slate">
-                Whether you know exactly where you want to go or you&apos;re
-                just starting to explore, we&apos;re here to help. Reach out any
-                way you like — your first counselling session is always free.
-              </p>
-            </Reveal>
+                <span className="mt-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">
+                  Get in touch
+                </span>
+                <h1 className="mt-5 max-w-3xl font-display text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl">
+                  Let&apos;s talk about your{" "}
+                  <span className="text-accent">study abroad plans</span>
+                </h1>
+                <p className="mt-5 max-w-2xl text-slate">
+                  Whether you know exactly where you want to go or you&apos;re
+                  just starting to explore, we&apos;re here to help. Reach out
+                  any way you like your first counselling session is always
+                  free.
+                </p>
+              </Reveal>
+
+              {/* right: hero image */}
+              <Reveal delay={0.1}>
+                <div className="relative">
+                  <div className="relative aspect-4/3 w-full overflow-hidden rounded-3xl border border-line shadow-card">
+                    {HERO_IMAGE ? (
+                      <Image
+                        src={HERO_IMAGE}
+                        alt="Abroad Scholars counsellor helping a student plan their study abroad journey"
+                        fill
+                        priority
+                        sizes="(min-width: 1024px) 40vw, 100vw"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="grid h-full w-full place-items-center bg-tint text-slate">
+                        <div className="text-center">
+                          <FaRegImage className="mx-auto text-3xl text-blue-300" />
+                          <p className="mt-3 text-sm font-medium">
+                            Add your hero image
+                          </p>
+                          <p className="mt-1 text-xs text-muted">
+                            Set HERO_IMAGE at the top of this file
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Reveal>
+            </div>
           </div>
         </section>
 
-        {/* ───── Contact + form ───── */}
         <section className="py-16 lg:py-24">
-          <div className="mx-auto max-w-6xl px-5 lg:px-8">
+          <div className="mx-auto max-w-7xl px-5">
             <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
               {/* left: methods */}
               <Reveal>
@@ -102,7 +136,7 @@ export default function ContactPage() {
                 </h2>
                 <p className="mt-3 text-slate">
                   Prefer to talk? Call or message us and a real counsellor will
-                  pick up — no call queues, no bots.
+                  pick up no call queues, no bots.
                 </p>
 
                 <div className="mt-8 space-y-3">
@@ -227,4 +261,6 @@ export default function ContactPage() {
       <FloatingCTA />
     </>
   );
-}
+};
+
+export default ContactPage;

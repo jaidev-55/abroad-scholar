@@ -1,4 +1,6 @@
 import { SITE, NAV, DESTINATIONS } from "@/lib/Constants";
+import Image from "next/image";
+import Link from "next/link";
 import {
   FaGraduationCap,
   FaMapMarkerAlt,
@@ -9,22 +11,40 @@ import {
   FaLinkedinIn,
 } from "react-icons/fa";
 
+const FOOTER_LOGO = "/images/abroad-scholars-logo.png";
+
 const Footer = () => {
   const year = new Date().getFullYear();
   return (
     <footer className="border-t border-white/10 bg-navy-deep text-cloud">
-      <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8">
+      <div className="mx-auto max-w-7xl px-5 py-14">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2.5">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-linear-to-br from-gold-300 to-gold-400 text-ink">
-                <FaGraduationCap className="text-xl" />
-              </span>
-              <span className="font-display text-lg font-extrabold">
-                Abroad <span className="text-gold-gradient">Scholars</span>
-              </span>
-            </div>
+            <Link
+              href="/"
+              aria-label={`${SITE.name} — home`}
+              className="inline-flex items-center gap-2.5 rounded-lg"
+            >
+              {FOOTER_LOGO ? (
+                <Image
+                  src={FOOTER_LOGO}
+                  alt={`${SITE.name} logo`}
+                  width={220}
+                  height={52}
+                  className="h-12 w-auto brightness-0 invert "
+                />
+              ) : (
+                <>
+                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-linear-to-br from-gold-300 to-gold-400 text-ink">
+                    <FaGraduationCap className="text-xl" />
+                  </span>
+                  <span className="font-display text-lg font-extrabold">
+                    Abroad <span className="text-gold-gradient">Scholars</span>
+                  </span>
+                </>
+              )}
+            </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
               International education experts helping students reach top global
               universities. Trusted since {SITE.since}.
@@ -40,7 +60,7 @@ const Footer = () => {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-muted transition-colors hover:border-gold-400/50 hover:text-gold-400"
+                  className="grid h-10 w-10 place-items-center rounded-lg border border-white/10 text-muted transition-colors hover:border-gold-400/50 hover:text-gold-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 sm:h-9 sm:w-9"
                 >
                   <Icon />
                 </a>

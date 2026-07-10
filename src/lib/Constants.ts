@@ -36,6 +36,7 @@ export const NAV = [
   { label: "Test Prep", href: "/test-prep" },
   { label: "Success", href: "/success" },
   { label: "Contact", href: "/contact" },
+  { label: "Blogs", href: "/blog" },
 ];
 
 export const STATS = [

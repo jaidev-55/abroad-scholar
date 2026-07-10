@@ -20,12 +20,12 @@ function Logo() {
       aria-label={`${SITE.name} — home`}
     >
       <Image
-        src="/images/logo.webp"
+        src="/images/abroad-scholars-logo.png"
         alt="Abroad Scholars — International Education Experts"
-        width={240}
+        width={200}
         height={68}
         priority
-        className="h-11 w-auto brightness-0 invert sm:h-14"
+        className="h-12 w-auto brightness-0 invert "
       />
     </Link>
   );
@@ -58,7 +58,7 @@ const Navbar = () => {
           scrolled ? "shadow-[0_8px_30px_-12px_rgba(6,22,58,0.6)]" : ""
         }`}
       >
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 lg:px-8">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between  py-3 ">
           <Logo />
 
           <ul className="hidden items-center gap-1 lg:flex">

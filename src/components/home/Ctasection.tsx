@@ -50,13 +50,9 @@ const CTASection = () => {
 
   return (
     <section id="contact" className="relative bg-paper py-20 ">
-      <div className="mx-auto max-w-6xl px-5 lg:px-8">
+      <div className="mx-auto max-w-7xl px-5 ">
         <Reveal>
-          <div className="relative overflow-hidden rounded-4xl bg-linear-to-br from-navy via-navy to-navy-deep p-7 shadow-soft sm:p-10 lg:p-12">
-            {/* glow accents */}
-            <div className="absolute -left-16 -top-16 h-64 w-64 rounded-full bg-gold-400/15 blur-3xl" />
-            <div className="absolute -bottom-20 -right-10 h-72 w-72 rounded-full bg-blue-500/25 blur-3xl" />
-
+          <div className="relative overflow-hidden rounded-4xl bg-linear-to-br from-navy via-navy to-navy-deep p-7 shadow-soft sm:p-10">
             <div className="relative grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
               {/* Left: pitch + quick contact */}
               <div>
